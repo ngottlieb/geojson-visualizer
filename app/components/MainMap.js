@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { GeoJSON, Map, TileLayer, Pane } from 'react-leaflet';
+import { GeoJSON, Map, TileLayer, Pane, Popup } from 'react-leaflet';
 
 export default class MainMap extends React.Component {
   constructor(props) {
@@ -12,6 +12,22 @@ export default class MainMap extends React.Component {
     };
   }
 
+  onEachFeature(feature, layer) {
+    if (feature.properties) {
+      layer.bindPopup(this.popupText(feature.properties));
+    }
+  }
+
+  popupText(properties) {
+    var popupText = '<dl>';
+    for (const key of Object.keys(properties)) {
+      popupText += "<dt>" + key + "</dt>";
+      popupText += "<dd>" + properties[key] + "</dd>";
+    }
+    popupText += "</dl>";
+    return popupText;
+  }
+
   render() {
     const position = this.state.latlng;
     const zoom = this.state.zoom;
@@ -21,7 +37,9 @@ export default class MainMap extends React.Component {
     if (this.props.geoJSON) {
       geoJSON = (
         <GeoJSON
+          key={this.props.dataChangeKey}
           data={this.props.geoJSON}
+          onEachFeature={this.onEachFeature.bind(this)}
         />
       );
     } 

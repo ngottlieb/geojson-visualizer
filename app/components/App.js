@@ -7,7 +7,8 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      geoJSON: ''
+      geoJSON: '',
+      dataUrlChangeKey: 0
     };
 
     this.updateDataUrl = this.updateDataUrl.bind(this);
@@ -16,7 +17,12 @@ export default class App extends React.Component {
   updateDataUrl(newUrl) {
     const self = this;
     fetch(newUrl).then(function(response) { return response.json(); })
-      .then(function(j) { self.setState({ geoJSON: j }); });
+      .then(function(j) {
+        self.setState({ 
+          geoJSON: j,
+          dataUrlChangeKey: self.state.dataUrlChangeKey + 1
+        });
+      });
   }
 
   render() {
@@ -24,6 +30,7 @@ export default class App extends React.Component {
       <div id='app'>
         <MainMap
           geoJSON={this.state.geoJSON}
+          dataChangeKey={this.state.dataUrlChangeKey}
         />
         <InputBox
           updateDataUrl={this.updateDataUrl}
