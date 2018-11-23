@@ -1,6 +1,7 @@
-import Map from 'map';
+import ReactDOM from 'react-dom';
+import React from 'react';
+import App from 'components/App';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const map = new Map;
-  console.log('Initialized app');
+  ReactDOM.render(<App />, document.getElementById('container'));
 });

@@ -10,7 +10,7 @@ exports.files = {
 };
 
 exports.plugins = {
-  babel: { presets: ['latest'] },
+  babel: { presets: ['latest', 'react'] },
   copycat: {
     "images": ["app/assets/images", "node_modules/leaflet/dist/images"],
     verbose: true,
@@ -20,7 +20,6 @@ exports.plugins = {
 
 exports.npm = {
   styles: {
-    'leaflet': ['dist/leaflet.css'],
-    'bootstrap': ['dist/css/bootstrap.css']
+    'leaflet': ['dist/leaflet.css']
   },
 };
