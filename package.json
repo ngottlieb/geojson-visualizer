@@ -1,7 +1,7 @@
 {
-  "name": "site-template",
-  "description": "Brunch.io application template with ES6, Babel, and LeafletJS",
-  "author": "Your Name",
+  "name": "geojson-visualizer",
+  "description": "An opinionated tool for rapid visualization of geospatial data",
+  "author": "Nick Gottlieb",
   "version": "0.0.1",
   "repository": "",
   "scripts": {
