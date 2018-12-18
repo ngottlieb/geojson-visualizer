@@ -56,7 +56,9 @@ export default class MainMap extends React.Component {
           {geoJSON}
         </Map>
         <DataForm
+          openModal={this.props.openModal}
           updateDataUrl={this.props.updateDataUrl}
+          dataUrl={this.props.dataUrl}
           geoJSON={this.props.geoJSON}
           dataChangeKey={this.props.dataChangeKey}
         />

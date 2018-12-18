@@ -18,7 +18,7 @@ export default class DataForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataUrl: "",
+      dataUrl: this.props.dataUrl,
       activeTabKey: this.props.geoJSON ? 2 : 1,
     };
 
@@ -28,6 +28,14 @@ export default class DataForm extends React.Component {
 
   handleChange(e) {
     this.setState({[e.target.name]: e.target.value});
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.dataUrl !== prevProps.dataUrl) {
+      this.setState({dataUrl: this.props.dataUrl}, () => {
+        this.loadData();
+      });
+    }
   }
 
   loadData() {
@@ -58,6 +66,12 @@ export default class DataForm extends React.Component {
               </FormGroup>
               <Button bsStyle="info" onClick={this.loadData}>
                 Load Data
+              </Button>
+              <Button
+                className="pull-left"
+                onClick={this.props.openModal}
+                bsStyle="danger">
+                HELP!
               </Button>
             </Form>
           </Tab>
