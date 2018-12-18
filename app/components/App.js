@@ -1,7 +1,7 @@
 import React from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import MainMap from './MainMap';
-import InputBox from './InputBox';
+import DataForm from './DataForm';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -31,8 +31,6 @@ export default class App extends React.Component {
         <MainMap
           geoJSON={this.state.geoJSON}
           dataChangeKey={this.state.dataUrlChangeKey}
-        />
-        <InputBox
           updateDataUrl={this.updateDataUrl}
         />
       </div>

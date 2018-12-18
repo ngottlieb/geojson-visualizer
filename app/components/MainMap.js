@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { GeoJSON, Map, TileLayer, Pane, Popup } from 'react-leaflet';
+import DataForm from './DataForm';
 
 export default class MainMap extends React.Component {
   constructor(props) {
@@ -45,14 +46,21 @@ export default class MainMap extends React.Component {
     } 
 
     return (
-      <Map center={position} zoom={zoom} id="mapid">
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          maxZoom={19}
+      <React.Fragment>
+        <Map center={position} zoom={zoom} id="mapid">
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            maxZoom={19}
+          />
+          {geoJSON}
+        </Map>
+        <DataForm
+          updateDataUrl={this.props.updateDataUrl}
+          geoJSON={this.props.geoJSON}
+          dataChangeKey={this.props.dataChangeKey}
         />
-        {geoJSON}
-      </Map>
+      </React.Fragment>
     );
   }
 }
