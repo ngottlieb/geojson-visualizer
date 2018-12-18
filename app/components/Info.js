@@ -51,6 +51,7 @@ export default class Info extends React.Component {
     ));
     return (
       <React.Fragment>
+        <h2>Filename<Label>{this.props.geoJSON ? this.props.geoJSON.fileName : ""}</Label></h2>
         <h2>Features<Label>{this.props.geoJSON ? this.props.geoJSON.features.length : 0}</Label></h2>
         <ListGroup>
           {geometryTypeCountsList}
