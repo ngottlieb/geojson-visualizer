@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { GeoJSON, Map, TileLayer, Pane, Popup } from 'react-leaflet';
 import DataForm from './DataForm';
+import bbox from '@turf/bbox';
 
 export default class MainMap extends React.Component {
   constructor(props) {
@@ -11,6 +12,20 @@ export default class MainMap extends React.Component {
       zoom: 1,
       tileLayer: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     };
+    this.mapRef = React.createRef();
+  }
+
+  componentDidUpdate(prevProps) {
+    // use turf to calculate bounding box of GeoJSON
+    // and fit map to bounds
+    // because we re-render the map whenever the GeoJSON changes, we can't
+    // use an "onAdd" callback on the GeoJSON component because the map
+    // hasn't been rendered to the DOM when we're adding the GeoJSON
+    if (this.props.geoJSON && this.props.geoJSON !== prevProps.geoJSON) {
+      const bounds = bbox(this.props.geoJSON);
+      const leafletBounds = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]];
+      this.mapRef.current.leafletElement.fitBounds(leafletBounds);
+    }
   }
 
   onEachFeature(feature, layer) {
@@ -47,7 +62,7 @@ export default class MainMap extends React.Component {
 
     return (
       <React.Fragment>
-        <Map center={position} zoom={zoom} id="mapid">
+        <Map center={position} zoom={zoom} id="mapid" ref={this.mapRef}>
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
