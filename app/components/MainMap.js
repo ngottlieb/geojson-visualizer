@@ -10,9 +10,12 @@ export default class MainMap extends React.Component {
     this.state = {
       latlng: [51, -0.09],
       zoom: 1,
-      tileLayer: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+      tileLayer: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      colourByProperty: null
     };
     this.mapRef = React.createRef();
+    this.featureStyle = this.featureStyle.bind(this);
+    this.updateColourByProperty = this.updateColourByProperty.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -34,6 +37,23 @@ export default class MainMap extends React.Component {
     }
   }
 
+  featureStyle(feature) {
+    var styles = {
+      color: "rgb(51, 136, 255)",
+      fillColor: "rgb(51, 136, 255)"
+    };
+    // check if colourByProperty is set
+    if (this.state.colourByProperty) {
+      const propColour = this.state.colourByProperty;
+      if (feature.properties[propColour]) {
+        const colour = stringToColour(feature.properties[propColour]);
+        styles.fillColor = colour;
+        styles.color = colour;
+      }
+    }
+    return styles;
+  }
+
   popupText(properties) {
     var popupText = '<dl>';
     for (const key of Object.keys(properties)) {
@@ -42,6 +62,12 @@ export default class MainMap extends React.Component {
     }
     popupText += "</dl>";
     return popupText;
+  }
+
+  updateColourByProperty(property) {
+    this.setState({
+      colourByProperty: property
+    });
   }
 
   render() {
@@ -56,6 +82,7 @@ export default class MainMap extends React.Component {
           key={this.props.dataChangeKey}
           data={this.props.geoJSON}
           onEachFeature={this.onEachFeature.bind(this)}
+          style={this.featureStyle}
         />
       );
     } 
@@ -76,8 +103,24 @@ export default class MainMap extends React.Component {
           dataUrl={this.props.dataUrl}
           geoJSON={this.props.geoJSON}
           dataChangeKey={this.props.dataChangeKey}
+          updateColourByProperty={this.updateColourByProperty}
+          colourByProperty={this.state.colourByProperty}
         />
       </React.Fragment>
     );
   }
+}
+
+// https://stackoverflow.com/questions/3426404/create-a-hexadecimal-colour-based-on-a-string-with-javascript
+var stringToColour = function(str) {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  var colour = '#';
+  for (var i = 0; i < 3; i++) {
+    var value = (hash >> (i * 8)) & 0xFF;
+    colour += ('00' + value.toString(16)).substr(-2);
+  }
+  return colour;
 }
