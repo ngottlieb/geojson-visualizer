@@ -76,7 +76,12 @@ export default class DataForm extends React.Component {
             </Form>
           </Tab>
           <Tab eventKey={2} title="Info" className="info-tab">
-            <Info className="info-tab" geoJSON={this.props.geoJSON} />
+            <Info
+              className="info-tab"
+              geoJSON={this.props.geoJSON}
+              colourByProperty={this.props.colourByProperty}
+              updateColourByProperty={this.props.updateColourByProperty}
+            />
           </Tab>
           <Tab eventKey={3} title="Filter">
             <Filters geoJSON={this.props.geoJSON} />

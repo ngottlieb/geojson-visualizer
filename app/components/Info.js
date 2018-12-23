@@ -1,12 +1,12 @@
-import React from 'react';
-import { ListGroup, ListGroupItem, Label, Badge } from 'react-bootstrap';
+import React from "react";
+import {Alert, ListGroup, ListGroupItem, Label, Badge} from "react-bootstrap";
 
 export default class Info extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       propList: this.getPropList(this.props.geoJSON),
-      geometryTypeCounts: this.getGeometryTypeCounts(this.props.geoJSON)
+      geometryTypeCounts: this.getGeometryTypeCounts(this.props.geoJSON),
     };
   }
 
@@ -14,7 +14,7 @@ export default class Info extends React.Component {
     if (this.props.geoJSON !== prevProps.geoJSON) {
       this.setState({
         propList: this.getPropList(this.props.geoJSON),
-        geometryTypeCounts: this.getGeometryTypeCounts(this.props.geoJSON)
+        geometryTypeCounts: this.getGeometryTypeCounts(this.props.geoJSON),
       });
     }
   }
@@ -23,7 +23,8 @@ export default class Info extends React.Component {
     const geometryTypeCounts = {};
     if (geoJSON) {
       for (var feature of geoJSON.features) {
-        geometryTypeCounts[feature.geometry.type] = ++geometryTypeCounts[feature.geometry.type] || 0;
+        geometryTypeCounts[feature.geometry.type] =
+          ++geometryTypeCounts[feature.geometry.type] || 0;
       }
     }
     return geometryTypeCounts;
@@ -35,32 +36,60 @@ export default class Info extends React.Component {
       for (var feature of geoJSON.features) {
         const propKeys = Object.keys(feature.properties);
         for (var p of propKeys) {
-          filters[p] = '';
+          filters[p] = "";
         }
       }
     }
     return Object.keys(filters);
   }
 
+  handlePropClick(name) {
+    // turn prop colouring off if this prop is already active
+    if (this.props.colourByProperty === name) {
+      this.props.updateColourByProperty(null);
+    } else {
+      this.props.updateColourByProperty(name);
+    }
+  }
+
   render() {
-    const propsList = this.state.propList.map((name) => (
-      <ListGroupItem key={name}>{name}</ListGroupItem>
+    const propsList = this.state.propList.map(name => (
+      <ListGroupItem
+        className={this.props.colourByProperty === name ? 'active' : ''}
+        key={name}
+        onClick={() => this.handlePropClick(name)}
+      >
+        {name}
+      </ListGroupItem>
     ));
-    const geometryTypeCountsList = Object.keys(this.state.geometryTypeCounts).map((type) => (
-      <ListGroupItem key={type}>{type} <Label>{this.state.geometryTypeCounts[type]}</Label></ListGroupItem>
+    const geometryTypeCountsList = Object.keys(
+      this.state.geometryTypeCounts,
+    ).map(type => (
+      <ListGroupItem key={type}>
+        {type} <Label>{this.state.geometryTypeCounts[type]}</Label>
+      </ListGroupItem>
     ));
     return (
       <React.Fragment>
-        <h2>Filename<Label>{this.props.geoJSON ? this.props.geoJSON.fileName : ""}</Label></h2>
-        <h2>Features<Label>{this.props.geoJSON ? this.props.geoJSON.features.length : 0}</Label></h2>
-        <ListGroup>
-          {geometryTypeCountsList}
-        </ListGroup>
+        <h2>
+          Filename
+          <Label>{this.props.geoJSON ? this.props.geoJSON.fileName : ""}</Label>
+        </h2>
+        <h2>
+          Features
+          <Label>
+            {this.props.geoJSON ? this.props.geoJSON.features.length : 0}
+          </Label>
+        </h2>
+        <ListGroup>{geometryTypeCountsList}</ListGroup>
         <hr />
-        <h2>Properties<Label>{this.state.propList.length}</Label></h2>
-        <ListGroup>
-          {propsList}
-        </ListGroup>
+        <h2>
+          Properties<Label>{this.state.propList.length}</Label>
+        </h2>
+        <Alert bsStyle="info">
+          Click on a property name to colour features by that property.
+        </Alert>
+        <ListGroup>{propsList}</ListGroup>
       </React.Fragment>
     );
   }
