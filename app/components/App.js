@@ -82,6 +82,11 @@ export default class App extends React.Component {
             <Button onClick={this.loadExampleData} bsStyle="info">
               Load Example GeoJSON
             </Button>
+            <h4>Bugs, Feature Requests, Contributions?</h4>
+            <p>
+              Head to the Github repo: <a href="https://github.com/ngottlieb/geojson-visualizer">https://github.com/ngottlieb/geojson-visualizer</a>.
+              Feel free to fork and submit pull requests, or use Github issues to submit bugs or feature requests.
+            </p>
           </Modal.Body>
         </Modal>
       </div>
