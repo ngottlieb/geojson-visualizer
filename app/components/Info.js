@@ -5,7 +5,6 @@ export default class Info extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      propList: this.getPropList(this.props.geoJSON),
       geometryTypeCounts: this.getGeometryTypeCounts(this.props.geoJSON),
     };
   }
@@ -13,7 +12,6 @@ export default class Info extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.geoJSON !== prevProps.geoJSON) {
       this.setState({
-        propList: this.getPropList(this.props.geoJSON),
         geometryTypeCounts: this.getGeometryTypeCounts(this.props.geoJSON),
       });
     }
@@ -30,19 +28,6 @@ export default class Info extends React.Component {
     return geometryTypeCounts;
   }
 
-  getPropList(geoJSON) {
-    const filters = {};
-    if (geoJSON) {
-      for (var feature of geoJSON.features) {
-        const propKeys = Object.keys(feature.properties);
-        for (var p of propKeys) {
-          filters[p] = "";
-        }
-      }
-    }
-    return Object.keys(filters);
-  }
-
   handlePropClick(name) {
     // turn prop colouring off if this prop is already active
     if (this.props.colourByProperty === name) {
@@ -53,7 +38,7 @@ export default class Info extends React.Component {
   }
 
   render() {
-    const propsList = this.state.propList.map(name => (
+    const propsList = this.props.propList.map(name => (
       <ListGroupItem
         className={this.props.colourByProperty === name ? 'active' : ''}
         key={name}
@@ -84,7 +69,7 @@ export default class Info extends React.Component {
         <ListGroup>{geometryTypeCountsList}</ListGroup>
         <hr />
         <h2>
-          Properties<Label>{this.state.propList.length}</Label>
+          Properties<Label>{this.props.propList.length}</Label>
         </h2>
         <Alert bsStyle="info">
           Click on a property name to colour features by that property.

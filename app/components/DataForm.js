@@ -43,6 +43,19 @@ export default class DataForm extends React.Component {
     this.setState({activeTabKey: 2});
   }
 
+  getPropList(geoJSON) {
+    const filters = {};
+    if (geoJSON) {
+      for (var feature of geoJSON.features) {
+        const propKeys = Object.keys(feature.properties);
+        for (var p of propKeys) {
+          filters[p] = "";
+        }
+      }
+    }
+    return Object.keys(filters);
+  }
+
   render() {
     return (
       <Well className="form-box leaflet-top leaflet-control leaflet-right">
@@ -81,6 +94,7 @@ export default class DataForm extends React.Component {
               geoJSON={this.props.geoJSON}
               colourByProperty={this.props.colourByProperty}
               updateColourByProperty={this.props.updateColourByProperty}
+              propList={this.getPropList(this.props.geoJSON)}
             />
           </Tab>
           <Tab eventKey={3} title="Filter">
