@@ -1,8 +1,8 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { GeoJSON, Map, TileLayer, Pane, Popup } from 'react-leaflet';
-import DataForm from './DataForm';
-import bbox from '@turf/bbox';
+import React from "react";
+import {render} from "react-dom";
+import {GeoJSON, Map, TileLayer, Pane, Popup} from "react-leaflet";
+import DataForm from "./DataForm";
+import bbox from "@turf/bbox";
 
 export default class MainMap extends React.Component {
   constructor(props) {
@@ -10,12 +10,16 @@ export default class MainMap extends React.Component {
     this.state = {
       latlng: [51, -0.09],
       zoom: 1,
-      tileLayer: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      colourByProperty: null
+      tileLayer: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      colourByProperty: null,
+      filters: {},
     };
+
     this.mapRef = React.createRef();
     this.featureStyle = this.featureStyle.bind(this);
     this.updateColourByProperty = this.updateColourByProperty.bind(this);
+    this.showFeature = this.showFeature.bind(this);
+    this.updateFilters = this.updateFilters.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -37,10 +41,28 @@ export default class MainMap extends React.Component {
     }
   }
 
+  updateFilters(newFilters) {
+    this.setState({ filters: newFilters });
+    this.props.triggerGeoJSONUpdate();
+  }
+
+  getPropList(geoJSON) {
+    const filters = {};
+    if (geoJSON) {
+      for (var feature of geoJSON.features) {
+        const propKeys = Object.keys(feature.properties);
+        for (var p of propKeys) {
+          filters[p] = "";
+        }
+      }
+    }
+    return Object.keys(filters);
+  }
+
   featureStyle(feature) {
     var styles = {
       color: "rgb(51, 136, 255)",
-      fillColor: "rgb(51, 136, 255)"
+      fillColor: "rgb(51, 136, 255)",
     };
     // check if colourByProperty is set
     if (this.state.colourByProperty) {
@@ -55,7 +77,7 @@ export default class MainMap extends React.Component {
   }
 
   popupText(properties) {
-    var popupText = '<dl>';
+    var popupText = "<dl>";
     for (const key of Object.keys(properties)) {
       popupText += "<dt>" + key + "</dt>";
       popupText += "<dd>" + properties[key] + "</dd>";
@@ -66,8 +88,17 @@ export default class MainMap extends React.Component {
 
   updateColourByProperty(property) {
     this.setState({
-      colourByProperty: property
+      colourByProperty: property,
     });
+  }
+
+  showFeature(feature, layer) {
+    for (const filter of Object.keys(this.state.filters)) {
+      if (!('' + feature.properties[filter]).includes(this.state.filters[filter])) {
+        return false;
+      }
+    }
+    return true;
   }
 
   render() {
@@ -83,9 +114,10 @@ export default class MainMap extends React.Component {
           data={this.props.geoJSON}
           onEachFeature={this.onEachFeature.bind(this)}
           style={this.featureStyle}
+          filter={this.showFeature}
         />
       );
-    } 
+    }
 
     return (
       <React.Fragment>
@@ -105,6 +137,9 @@ export default class MainMap extends React.Component {
           dataChangeKey={this.props.dataChangeKey}
           updateColourByProperty={this.updateColourByProperty}
           colourByProperty={this.state.colourByProperty}
+          filters={this.state.filters}
+          propList={this.getPropList(this.props.geoJSON)}
+          updateFilters={this.updateFilters}
         />
       </React.Fragment>
     );
@@ -117,10 +152,10 @@ var stringToColour = function(str) {
   for (var i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
-  var colour = '#';
+  var colour = "#";
   for (var i = 0; i < 3; i++) {
-    var value = (hash >> (i * 8)) & 0xFF;
-    colour += ('00' + value.toString(16)).substr(-2);
+    var value = (hash >> (i * 8)) & 0xff;
+    colour += ("00" + value.toString(16)).substr(-2);
   }
   return colour;
-}
+};

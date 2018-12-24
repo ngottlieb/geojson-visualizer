@@ -16,8 +16,12 @@ export default class App extends React.Component {
     this.updateDataUrl = this.updateDataUrl.bind(this);
     this.openModal = this.openModal.bind(this);
     this.loadExampleData = this.loadExampleData.bind(this);
+    this.triggerGeoJSONUpdate = this.triggerGeoJSONUpdate.bind(this);
   }
 
+  triggerGeoJSONUpdate() {
+    this.setState({ dataUrlChangeKey: this.state.dataUrlChangeKey + 1 });
+  }
 
   updateDataUrl(newUrl) {
     const self = this;
@@ -55,6 +59,7 @@ export default class App extends React.Component {
           updateDataUrl={this.updateDataUrl}
           dataUrl={this.state.dataUrl}
           openModal={this.openModal}
+          triggerGeoJSONUpdate={this.triggerGeoJSONUpdate}
         />
         <Modal
           show={this.state.showModal}

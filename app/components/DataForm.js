@@ -43,18 +43,6 @@ export default class DataForm extends React.Component {
     this.setState({activeTabKey: 2});
   }
 
-  getPropList(geoJSON) {
-    const filters = {};
-    if (geoJSON) {
-      for (var feature of geoJSON.features) {
-        const propKeys = Object.keys(feature.properties);
-        for (var p of propKeys) {
-          filters[p] = "";
-        }
-      }
-    }
-    return Object.keys(filters);
-  }
 
   render() {
     return (
@@ -94,11 +82,17 @@ export default class DataForm extends React.Component {
               geoJSON={this.props.geoJSON}
               colourByProperty={this.props.colourByProperty}
               updateColourByProperty={this.props.updateColourByProperty}
-              propList={this.getPropList(this.props.geoJSON)}
+              propList={this.props.propList}
             />
           </Tab>
           <Tab eventKey={3} title="Filter">
-            <Filters geoJSON={this.props.geoJSON} />
+            <Filters
+              className="filters-tab"
+              geoJSON={this.props.geoJSON}
+              propList={this.props.propList}
+              filters={this.props.filters}
+              updateFilters={this.props.updateFilters}
+            />
           </Tab>
         </Tabs>
       </Well>
