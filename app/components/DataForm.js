@@ -13,6 +13,7 @@ import {
 } from "react-bootstrap";
 import Info from "./Info";
 import Filters from "./Filters";
+import queryString from 'query-string';
 
 export default class DataForm extends React.Component {
   constructor(props) {
@@ -36,6 +37,15 @@ export default class DataForm extends React.Component {
         this.loadData();
       });
     }
+  }
+
+  mapUrl() {
+    var url = location.origin + '?';
+    return url + queryString.stringify({
+      colourByProperty: this.props.colourByProperty,
+      filters: JSON.stringify(this.props.filters),
+      dataUrl: this.props.dataUrl
+    });
   }
 
   loadData() {
@@ -93,6 +103,10 @@ export default class DataForm extends React.Component {
               filters={this.props.filters}
               updateFilters={this.props.updateFilters}
             />
+          </Tab>
+          <Tab eventKey={4} title="Share Map">
+            Share this link to show friends your custom map:
+            <a href={this.mapUrl()}>{this.mapUrl()}</a>
           </Tab>
         </Tabs>
       </Well>

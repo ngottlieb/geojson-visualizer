@@ -3,16 +3,21 @@ import {render} from "react-dom";
 import {GeoJSON, Map, TileLayer, Pane, Popup} from "react-leaflet";
 import DataForm from "./DataForm";
 import bbox from "@turf/bbox";
+import queryString from 'query-string';
 
 export default class MainMap extends React.Component {
   constructor(props) {
     super(props);
+
+    const params = queryString.parse(location.search);
+    const filters = params.filters ? JSON.parse(params.filters) : {};
+
     this.state = {
       latlng: [51, -0.09],
       zoom: 1,
       tileLayer: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      colourByProperty: null,
-      filters: {},
+      colourByProperty: params.colourByProperty,
+      filters: filters
     };
 
     this.mapRef = React.createRef();

@@ -2,6 +2,7 @@ import React from "react";
 import {Button, Modal} from "react-bootstrap";
 import MainMap from "./MainMap";
 import DataForm from "./DataForm";
+import queryString from 'query-string';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -17,6 +18,11 @@ export default class App extends React.Component {
     this.openModal = this.openModal.bind(this);
     this.loadExampleData = this.loadExampleData.bind(this);
     this.triggerGeoJSONUpdate = this.triggerGeoJSONUpdate.bind(this);
+
+    const params = queryString.parse(location.search);
+    if (params.dataUrl) {
+      this.updateDataUrl(params.dataUrl);
+    }
   }
 
   triggerGeoJSONUpdate() {

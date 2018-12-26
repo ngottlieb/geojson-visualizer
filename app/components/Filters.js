@@ -21,6 +21,7 @@ export default class Filters extends React.Component {
         <FormControl
           type="text"
           name={name}
+          defaultValue={this.props.filters[name]}
           placeholder={`Filter by ${name}`}
           onChange={this.handleChange}
         />
