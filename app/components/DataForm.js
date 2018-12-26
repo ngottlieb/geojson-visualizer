@@ -13,7 +13,8 @@ import {
 } from "react-bootstrap";
 import Info from "./Info";
 import Filters from "./Filters";
-import queryString from 'query-string';
+import queryString from "query-string";
+import {CopyToClipboard} from "react-copy-to-clipboard";
 
 export default class DataForm extends React.Component {
   constructor(props) {
@@ -21,10 +22,13 @@ export default class DataForm extends React.Component {
     this.state = {
       dataUrl: this.props.dataUrl,
       activeTabKey: this.props.geoJSON ? 2 : 1,
+      shareMapUrl: this.getShareMapUrl(),
+      copied: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.loadData = this.loadData.bind(this);
+    this.setShortUrl = this.setShortUrl.bind(this);
   }
 
   handleChange(e) {
@@ -37,22 +41,54 @@ export default class DataForm extends React.Component {
         this.loadData();
       });
     }
+
+    if (
+      this.props.dataUrl !== prevProps.dataUrl ||
+      this.props.filters !== prevProps.filters ||
+      this.props.colourByProperty !== prevProps.colourByProperty
+    ) {
+      this.setShareMapUrl();
+    }
   }
 
-  mapUrl() {
-    var url = location.origin + location.pathname + '?';
-    return url + queryString.stringify({
-      colourByProperty: this.props.colourByProperty,
-      filters: JSON.stringify(this.props.filters),
-      dataUrl: this.props.dataUrl
-    });
+  getShareMapUrl() {
+    const urlBase = location.origin + location.pathname + "?";
+    return (
+      urlBase +
+      queryString.stringify({
+        colourByProperty: this.props.colourByProperty,
+        filters: JSON.stringify(this.props.filters),
+        dataUrl: this.props.dataUrl,
+      })
+    );
+  }
+
+  setShareMapUrl() {
+    const url = this.getShareMapUrl();
+
+    this.setShortUrl(url);
+    this.setState({shareMapUrl: url});
+  }
+
+  setShortUrl(url) {
+    const self = this;
+    console.log("running get short url");
+    fetch(
+      "https://cors-anywhere.herokuapp.com/http://tinyurl.com/api-create.php?url=" +
+        url,
+    )
+      .then(function(response) {
+        return response.text();
+      })
+      .then(function(txt) {
+        self.setState({shortUrl: txt, copied: false});
+      });
   }
 
   loadData() {
     this.props.updateDataUrl(this.state.dataUrl);
     this.setState({activeTabKey: 2});
   }
-
 
   render() {
     return (
@@ -105,8 +141,29 @@ export default class DataForm extends React.Component {
             />
           </Tab>
           <Tab eventKey={4} title="Share Map">
-            Share this link to show friends your custom map:
-            <a href={this.mapUrl()}>{this.mapUrl()}</a>
+            <p>
+              Share this link to regenerate this map:
+              <br />
+              <a href={this.state.shareMapUrl}> {this.state.shareMapUrl}</a>
+            </p>
+            <hr />
+            <FormGroup controlId="shortUrl">
+              <ControlLabel>Shortened URL</ControlLabel>
+              <FormControl
+                type="text"
+                defaultValue={this.state.shortUrl}
+                readOnly
+              />
+            </FormGroup>
+            <CopyToClipboard
+              text={this.state.shortUrl}
+              onCopy={() => this.setState({copied: true})}>
+              <Button
+                onClick={this.copyToClipboard}
+                bsStyle={this.state.copied ? "danger" : "info"}>
+                {this.state.copied ? "Copied" : "Copy to Clipboard"}
+              </Button>
+            </CopyToClipboard>
           </Tab>
         </Tabs>
       </Well>
