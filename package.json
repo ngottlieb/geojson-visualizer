@@ -14,7 +14,7 @@
     "leaflet-ajax": "^2.1.0",
     "ncu": "^0.2.1",
     "npm-check-updates": "^2.14.3",
-    "query-string": "^6.2.0"
+    "query-string": "^5.1.1"
   },
   "devDependencies": {
     "auto-reload-brunch": "^2",
