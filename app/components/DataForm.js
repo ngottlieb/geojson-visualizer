@@ -40,7 +40,7 @@ export default class DataForm extends React.Component {
   }
 
   mapUrl() {
-    var url = location.origin + '?';
+    var url = location.origin + location.pathname + '?';
     return url + queryString.stringify({
       colourByProperty: this.props.colourByProperty,
       filters: JSON.stringify(this.props.filters),
