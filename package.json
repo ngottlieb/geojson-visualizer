@@ -14,7 +14,8 @@
     "leaflet-ajax": "^2.1.0",
     "ncu": "^0.2.1",
     "npm-check-updates": "^2.14.3",
-    "query-string": "^5.1.1"
+    "query-string": "^5.1.1",
+    "react-copy-to-clipboard": "^5.0.1"
   },
   "devDependencies": {
     "auto-reload-brunch": "^2",
