@@ -9,7 +9,7 @@ export default class MainMap extends React.Component {
   constructor(props) {
     super(props);
 
-    const params = queryString.parse(location.search);
+    const params = queryString.parse(location.search, { arrayFormat: 'bracket' });
     const filters = params.filters ? JSON.parse(params.filters) : {};
 
     this.state = {
@@ -17,6 +17,7 @@ export default class MainMap extends React.Component {
       zoom: 1,
       tileLayer: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       colourByProperty: params.colourByProperty,
+      continuousProps: params.continuousProps || [],
       filters: filters
     };
 
@@ -25,6 +26,7 @@ export default class MainMap extends React.Component {
     this.updateColourByProperty = this.updateColourByProperty.bind(this);
     this.showFeature = this.showFeature.bind(this);
     this.updateFilters = this.updateFilters.bind(this);
+    this.updateContinuousProps = this.updateContinuousProps.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -63,6 +65,20 @@ export default class MainMap extends React.Component {
     }
     return Object.keys(filters);
   }
+
+  updateContinuousProps(name) {
+    const index = this.state.continuousProps.indexOf(name);
+    var cps = this.state.continuousProps.slice(0);
+    if (index !== -1) {
+      cps.splice(index,1);
+    } else {
+      cps.push(name);
+    }
+    this.setState({
+      continuousProps: cps
+    });
+  }
+
 
   featureStyle(feature) {
     var styles = {
@@ -144,7 +160,9 @@ export default class MainMap extends React.Component {
           colourByProperty={this.state.colourByProperty}
           filters={this.state.filters}
           propList={this.getPropList(this.props.geoJSON)}
+          continuousProps={this.state.continuousProps}
           updateFilters={this.updateFilters}
+          updateContinuousProps={this.updateContinuousProps}
         />
       </React.Fragment>
     );

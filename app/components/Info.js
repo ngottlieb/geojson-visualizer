@@ -1,5 +1,12 @@
 import React from "react";
-import {Alert, ListGroup, ListGroupItem, Label, Badge} from "react-bootstrap";
+import {
+  Checkbox,
+  Alert,
+  ListGroup,
+  ListGroupItem,
+  Label,
+  Badge,
+} from "react-bootstrap";
 
 export default class Info extends React.Component {
   constructor(props) {
@@ -37,14 +44,31 @@ export default class Info extends React.Component {
     }
   }
 
+  handleContinuousClick(name) {
+    this.props.updateContinuousProps(name);
+  }
+
+  propIsContinuous(name) {
+    return (
+      this.props.continuousProps &&
+      this.props.continuousProps.indexOf(name) !== -1
+    );
+  }
+
   render() {
     const propsList = this.props.propList.map(name => (
       <ListGroupItem
-        className={this.props.colourByProperty === name ? 'active' : ''}
-        key={name}
-        onClick={() => this.handlePropClick(name)}
-      >
-        {name}
+        className={this.props.colourByProperty === name ? "active" : ""}
+        key={name}>
+        <span onClick={() => this.handlePropClick(name)}>{name}</span>
+        <Checkbox
+          className="pull-right"
+          inline
+          onChange={() => this.handleContinuousClick(name)}
+          checked={this.propIsContinuous(name)}
+        >
+          Continuous
+        </Checkbox>
       </ListGroupItem>
     ));
     const geometryTypeCountsList = Object.keys(
@@ -73,6 +97,8 @@ export default class Info extends React.Component {
         </h2>
         <Alert bsStyle="info">
           Click on a property name to colour features by that property.
+          Properties are assumed to be discrete by default; check the box on the
+          right to mark them as continuous variables.
         </Alert>
         <ListGroup>{propsList}</ListGroup>
       </React.Fragment>
