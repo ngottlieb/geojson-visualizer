@@ -3,11 +3,14 @@
   "description": "An opinionated tool for rapid visualization of geospatial data",
   "author": "Nick Gottlieb",
   "version": "0.0.1",
-  "repository": "",
+  "homepage": "https://ngottlieb.github.io/geojson-visualizer/",
   "scripts": {
     "start": "brunch watch --server",
-    "build": "brunch build --production"
+    "build": "brunch build --production",
+    "predeploy": "npm run-script build",
+    "deploy": "gh-pages -d public"
   },
+  "src": "./public",
   "dependencies": {
     "@turf/bbox": "^6.0.1",
     "leaflet": "^1.3.4",
@@ -26,6 +29,7 @@
     "brunch": "^2",
     "clean-css-brunch": "^2",
     "copycat-brunch": "git+ssh://git@github.com/cmelgarejo/copycat-brunch.git",
+    "gh-pages": "^2.0.1",
     "react": "^16.6.3",
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.6.3",
