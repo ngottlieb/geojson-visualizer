@@ -98,7 +98,8 @@ export default class Info extends React.Component {
         <Alert bsStyle="info">
           Click on a property name to colour features by that property.
           Properties are assumed to be discrete by default; check the box on the
-          right to mark them as continuous variables.
+          right to mark them as continuous variables. It is assumed that continuous
+          variables are numeric.
         </Alert>
         <ListGroup>{propsList}</ListGroup>
       </React.Fragment>
