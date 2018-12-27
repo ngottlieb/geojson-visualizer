@@ -31,7 +31,7 @@ export default class App extends React.Component {
 
   updateDataUrl(newUrl) {
     const self = this;
-    fetch(newUrl)
+    fetch(`https://cors-anywhere.herokuapp.com/${newUrl}`)
       .then(function(response) {
         return response.json();
       })

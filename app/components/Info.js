@@ -28,8 +28,10 @@ export default class Info extends React.Component {
     const geometryTypeCounts = {};
     if (geoJSON) {
       for (var feature of geoJSON.features) {
-        geometryTypeCounts[feature.geometry.type] =
-          ++geometryTypeCounts[feature.geometry.type] || 0;
+        if (feature.geometry) {
+          geometryTypeCounts[feature.geometry.type] =
+            ++geometryTypeCounts[feature.geometry.type] || 0;
+        }
       }
     }
     return geometryTypeCounts;
