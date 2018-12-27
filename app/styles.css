@@ -27,3 +27,7 @@ html, body, #container, #app {
 .info-tab .label {
   float: right;
 }
+
+li.list-group-item span {
+  cursor: pointer;
+}

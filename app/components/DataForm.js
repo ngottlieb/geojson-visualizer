@@ -45,7 +45,9 @@ export default class DataForm extends React.Component {
     if (
       this.props.dataUrl !== prevProps.dataUrl ||
       this.props.filters !== prevProps.filters ||
-      this.props.colourByProperty !== prevProps.colourByProperty
+      this.props.colourByProperty !== prevProps.colourByProperty ||
+      // this is funky, trying to determine if the arrays have the same values
+      difference(this.props.continuousProps, prevProps.continuousProps).length !== 0
     ) {
       this.setShareMapUrl();
     }
@@ -59,6 +61,9 @@ export default class DataForm extends React.Component {
         colourByProperty: this.props.colourByProperty,
         filters: JSON.stringify(this.props.filters),
         dataUrl: this.props.dataUrl,
+        continuousProps: this.props.continuousProps,
+      }, {
+          arrayFormat: 'bracket'
       })
     );
   }
@@ -128,6 +133,8 @@ export default class DataForm extends React.Component {
               geoJSON={this.props.geoJSON}
               colourByProperty={this.props.colourByProperty}
               updateColourByProperty={this.props.updateColourByProperty}
+              updateContinuousProps={this.props.updateContinuousProps}
+              continuousProps={this.props.continuousProps}
               propList={this.props.propList}
             />
           </Tab>
@@ -169,4 +176,18 @@ export default class DataForm extends React.Component {
       </Well>
     );
   }
+}
+
+// adapted from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
+const difference = (a, b) => {
+  var _difference = new Set(a);
+  const setB = new Set(b);
+  for (var elem of setB) {
+    if (_difference.has(elem)) {
+      _difference.delete(elem);
+    } else {
+      _difference.add(elem);
+    }
+  }
+  return [..._difference];
 }
